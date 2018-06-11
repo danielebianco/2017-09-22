@@ -2,19 +2,19 @@ package it.polito.tdp.formulaone.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Year;
 
 public class Race {
 	
 	private int raceId ;
-	private Year year ;
+	private int year ;
 	private int round ;
 	private int circuitId ; // refers to {@link Circuit}
 	private String name ;
 	private LocalDate date ;
 	private LocalTime time ;
 	private String url ;
-	public Race(int raceId, Year year, int round, int circuitId, String name, LocalDate date, LocalTime time,
+	
+	public Race(int raceId, int year, int round, int circuitId, String name, LocalDate date, LocalTime time,
 			String url) {
 		super();
 		this.raceId = raceId;
@@ -26,16 +26,28 @@ public class Race {
 		this.time = time;
 		this.url = url;
 	}
+	
+	
+	
+	public Race(int raceId, String name, int year) {
+		super();
+		this.raceId = raceId;
+		this.year = year;
+		this.name = name;
+	}
+
+
+
 	public int getRaceId() {
 		return raceId;
 	}
 	public void setRaceId(int raceId) {
 		this.raceId = raceId;
 	}
-	public Year getYear() {
+	public int getYear() {
 		return year;
 	}
-	public void setYear(Year year) {
+	public void setYear(int year) {
 		this.year = year;
 	}
 	public int getRound() {
@@ -74,7 +86,36 @@ public class Race {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + raceId;
+		result = prime * result + year;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Race other = (Race) obj;
+		if (raceId != other.raceId)
+			return false;
+		if (year != other.year)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 	
 
 }

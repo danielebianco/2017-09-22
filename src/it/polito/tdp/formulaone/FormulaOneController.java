@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.formulaone.model.Model;
+import it.polito.tdp.formulaone.model.Race;
+import it.polito.tdp.formulaone.model.Season;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,13 +24,13 @@ public class FormulaOneController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Season> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSelezionaStagione"
     private Button btnSelezionaStagione; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGara"
-    private ComboBox<?> boxGara; // Value injected by FXMLLoader
+    private ComboBox<Race> boxGara; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSimulaGara"
     private Button btnSimulaGara; // Value injected by FXMLLoader
@@ -44,12 +46,42 @@ public class FormulaOneController {
 
     @FXML
     void doSelezionaStagione(ActionEvent event) {
-    	txtResult.setText("btn Seleziona stagione premuto");
+    	try {
+    		
+    		Season s = (Season) boxAnno.getValue();
+    		if(s == null) {
+    			txtResult.setText("Selezionare una stagione!");
+    			return;
+    		}
+    		model.creaGrafo(s);
+    		String d = model.findMaxDegree();
+    		txtResult.setText(d.toString());
+    		
+    		this.boxGara.getItems().clear();
+        	this.boxGara.getItems().addAll(model.getRaces());
+//        	this.boxGara.setDisable(false);
+    		
+    	} catch(RuntimeException e) {
+    		e.printStackTrace(); // poi commenta
+    		System.out.println("Errore connessione al DB");
+    		txtResult.setText("Errore connessione al DB");
+    	}
     }
 
     @FXML
     void doSimulaGara(ActionEvent event) {
-    	txtResult.setText("btn simula gara premuto");
+    	
+    	Season s = (Season) boxAnno.getValue();
+    	if(s == null) {
+			txtResult.setText("Selezionare una stagione!");
+			return;
+		}
+    	
+    	Race r = (Race) boxGara.getValue();
+		if(r == null) {
+			txtResult.setText("Selezionare una gara!");
+			return;
+		}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -61,10 +93,12 @@ public class FormulaOneController {
         assert textInputK != null : "fx:id=\"textInputK\" was not injected: check your FXML file 'FormulaOne.fxml'.";
         assert textInputK1 != null : "fx:id=\"textInputK1\" was not injected: check your FXML file 'FormulaOne.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'FormulaOne.fxml'.";
+//        this.boxGara.setDisable(true);
     }
 
 	public void setModel(Model model) {
 		this.model = model;
-		
+		this.boxAnno.getItems().addAll(model.getSeasons());
+		this.boxGara.getItems().clear();
 	}
 }
